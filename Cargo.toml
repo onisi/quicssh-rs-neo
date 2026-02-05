@@ -1,12 +1,21 @@
 [package]
-name = "quicssh-rs"
-version = "0.1.5"
+name = "quicssh-rs-robust"
+version = "0.1.6-dev"
 edition = "2021"
 license = "MIT"
-authors = ["oowl <ouyangjun1999@gmail.com>"]
-description = "A simple ssh server based on quic protocol"
+authors = [
+    "hkatsuma <h.katsumata.2026@gmail.com> (fork maintainer)",
+    "oowl <ouyangjun1999@gmail.com> (original author)"
+]
+description = "A stabilized fork of quicssh-rs - QUIC proxy for SSH with enhanced network compatibility. WARNING: By default, QUIC certificate verification is disabled for ease of use; use at your own risk or enable verification with proper certificates."
+repository = "https://github.com/hkatsuma/quicssh-rs-robust"
+homepage = "https://github.com/hkatsuma/quicssh-rs-robust"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "quicssh-rs-robust"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.5.38", features = ["derive"] }
@@ -23,7 +32,7 @@ toml = "0.8.19"
 
 [package.metadata.deb]
 extended-description = """\
-:) quicssh-rs is a QUIC proxy that allows to use QUIC to connect to an SSH server without needing to patch the client or the server."""
+:) quicssh-rs-robust is a QUIC proxy that allows to use QUIC to connect to an SSH server without needing to patch the client or the server. This is a stabilized fork focused on robustness for production use."""
 section = "net"
 priority = "optional"
 suggests = "openssh-server"
