@@ -1,3 +1,32 @@
+> **Note:** This repository (`onisi/quicssh-rs-neo`) is a personal fork of
+> [hkatsuma/quicssh-rs-robust](https://github.com/hkatsuma/quicssh-rs-robust).
+> For general documentation, please refer to the upstream README.
+> This document describes only the changes specific to this fork.
+
+---
+
+# quicssh-rs-neo — Changes from upstream
+
+## Additional Modifications (beyond quicssh-rs-robust)
+
+- **Dependency updates**: Upgraded core libraries to resolve known vulnerabilities
+  - `quinn` 0.10.2 → 0.11.9
+  - `rustls` 0.21.12 → 0.23.37 (resolves RUSTSEC-2024-0336)
+  - `rcgen` 0.12.1 → 0.13.2
+- **Binary name**: Renamed from `quicssh-rs-robust` to `quicssh-rs`
+- **CI**: Added `cargo audit` job to GitHub Actions for continuous vulnerability scanning
+- **Dependabot**: Enabled weekly automated dependency update PRs
+
+## Install
+
+```bash
+cargo install --git https://github.com/onisi/quicssh-rs-neo
+```
+
+## Upstream
+
+- Upstream: [hkatsuma/quicssh-rs-robust](https://github.com/hkatsuma/quicssh-rs-robust)
+- Original: [oowl/quicssh-rs](https://github.com/oowl/quicssh-rs)
 # quicssh-rs-robust
 
 > **This is a fork of [oowl/quicssh-rs](https://github.com/oowl/quicssh-rs)** focused on **stabilization and robustness** for production use.

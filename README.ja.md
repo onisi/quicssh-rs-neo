@@ -1,3 +1,32 @@
+> **注意:** このリポジトリ（`onisi/quicssh-rs-neo`）は
+> [hkatsuma/quicssh-rs-robust](https://github.com/hkatsuma/quicssh-rs-robust) の個人フォークです。
+> 一般的なドキュメントは upstream の README を参照してください。
+> このドキュメントには本フォーク固有の変更点のみを記載します。
+
+---
+
+# quicssh-rs-neo — upstream からの変更点
+
+## 追加の変更点（quicssh-rs-robust に加えて）
+
+- **依存ライブラリの更新**: 既知の脆弱性を解消するためコアライブラリを更新
+  - `quinn` 0.10.2 → 0.11.9
+  - `rustls` 0.21.12 → 0.23.37（RUSTSEC-2024-0336 を解消）
+  - `rcgen` 0.12.1 → 0.13.2
+- **バイナリ名変更**: `quicssh-rs-robust` → `quicssh-rs`
+- **CI**: GitHub Actions に `cargo audit` ジョブを追加（継続的な脆弱性スキャン）
+- **Dependabot**: 週次の依存ライブラリ更新 PR を自動化
+
+## インストール
+
+```bash
+cargo install --git https://github.com/onisi/quicssh-rs-neo
+```
+
+## 上流リポジトリ
+
+- Upstream: [hkatsuma/quicssh-rs-robust](https://github.com/hkatsuma/quicssh-rs-robust)
+- Original: [oowl/quicssh-rs](https://github.com/oowl/quicssh-rs)
 # quicssh-rs-robust
 
 > **これは [oowl/quicssh-rs](https://github.com/oowl/quicssh-rs) のフォークです。** 本番環境での使用に向けた**安定化と堅牢性の向上**を目的としています。
