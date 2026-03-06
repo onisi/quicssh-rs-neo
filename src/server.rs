@@ -34,10 +34,11 @@ pub struct Opt {
 /// * `mtu_upper_bound` - Optional MTU upper bound in bytes. None uses Quinn's default (1452).
 fn configure_server(mtu_upper_bound: Option<u16>) -> Result<(ServerConfig, Vec<u8>), Box<dyn Error>> {
     let cert = rcgen::generate_simple_self_signed(vec!["localhost".into()]).unwrap();
-    let cert_der = cert.serialize_der().unwrap();
-    let priv_key = cert.serialize_private_key_der();
-    let priv_key = rustls::PrivateKey(priv_key);
-    let cert_chain = vec![rustls::Certificate(cert_der.clone())];
+    let cert_der = cert.cert.der().to_vec();
+    let priv_key = rustls::pki_types::PrivateKeyDer::try_from(
+        cert.key_pair.serialize_der()
+    ).unwrap();
+    let cert_chain = vec![rustls::pki_types::CertificateDer::from(cert_der.clone())];
 
     let mut server_config = ServerConfig::with_single_cert(cert_chain, priv_key)?;
     let transport_config = Arc::get_mut(&mut server_config.transport).unwrap();

@@ -57,35 +57,58 @@ fn enable_mtud_if_supported(upper_bound: Option<u16>) -> quinn::TransportConfig 
     transport_config
 }
 
-struct SkipServerVerification;
+use rustls::crypto::{verify_tls12_signature, verify_tls13_signature};
+use rustls::pki_types::{CertificateDer, ServerName, UnixTime};
+use rustls::{DigitallySignedStruct, SignatureScheme};
+
+#[derive(Debug)]
+struct SkipServerVerification(Arc<rustls::crypto::CryptoProvider>);
 
 impl SkipServerVerification {
     fn new() -> Arc<Self> {
-        Arc::new(Self)
+        Arc::new(Self(Arc::new(rustls::crypto::aws_lc_rs::default_provider())))
     }
 }
 
-impl rustls::client::ServerCertVerifier for SkipServerVerification {
+impl rustls::client::danger::ServerCertVerifier for SkipServerVerification {
     fn verify_server_cert(
         &self,
-        _end_entity: &rustls::Certificate,
-        _intermediates: &[rustls::Certificate],
-        _server_name: &rustls::ServerName,
-        _scts: &mut dyn Iterator<Item = &[u8]>,
-        _ocsp_response: &[u8],
-        _now: std::time::SystemTime,
-    ) -> Result<rustls::client::ServerCertVerified, rustls::Error> {
-        Ok(rustls::client::ServerCertVerified::assertion())
+        _end_entity: &CertificateDer<'_>,
+        _intermediates: &[CertificateDer<'_>],
+        _server_name: &ServerName<'_>,
+        _ocsp: &[u8],
+        _now: UnixTime,
+    ) -> Result<rustls::client::danger::ServerCertVerified, rustls::Error> {
+        Ok(rustls::client::danger::ServerCertVerified::assertion())
+    }
+
+    fn verify_tls12_signature(
+        &self, message: &[u8], cert: &CertificateDer<'_>, dss: &DigitallySignedStruct,
+    ) -> Result<rustls::client::danger::HandshakeSignatureValid, rustls::Error> {
+        verify_tls12_signature(message, cert, dss,
+            &self.0.signature_verification_algorithms)
+    }
+
+    fn verify_tls13_signature(
+        &self, message: &[u8], cert: &CertificateDer<'_>, dss: &DigitallySignedStruct,
+    ) -> Result<rustls::client::danger::HandshakeSignatureValid, rustls::Error> {
+        verify_tls13_signature(message, cert, dss,
+            &self.0.signature_verification_algorithms)
+    }
+
+    fn supported_verify_schemes(&self) -> Vec<SignatureScheme> {
+        self.0.signature_verification_algorithms.supported_schemes()
     }
 }
 
 fn configure_client(mtu_upper_bound: Option<u16>) -> Result<ClientConfig, Box<dyn Error>> {
     let crypto = rustls::ClientConfig::builder()
-        .with_safe_defaults()
+        .dangerous()
         .with_custom_certificate_verifier(SkipServerVerification::new())
         .with_no_client_auth();
 
-    let mut client_config = ClientConfig::new(Arc::new(crypto));
+    let quic_crypto = quinn::crypto::rustls::QuicClientConfig::try_from(crypto)?;
+    let mut client_config = ClientConfig::new(Arc::new(quic_crypto));
     let mut transport_config = enable_mtud_if_supported(mtu_upper_bound);
     transport_config.max_idle_timeout(Some(VarInt::from_u32(60_000).into()));
     transport_config.keep_alive_interval(Some(std::time::Duration::from_secs(1)));

@@ -19,16 +19,21 @@ path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.5.38", features = ["derive"] }
-quinn = "0.10.2"
+#quinn = "0.10.2"
 tokio = { version = "1.45.0", features = ["full"] }
 url = "2.5.2"
-rustls = { version = "0.21.12", features = ["quic","dangerous_configuration"] }
-rustls-pemfile = "2.1.3"
-rcgen = "0.12.1"
+#rustls = { version = "0.21.12", features = ["quic","dangerous_configuration"] }
+#rustls-pemfile = "2.1.3"
+#rcgen = "0.12.1"
 log = { version = "0.4.27", features = ["std", "serde"] }
 log4rs = "1.2.0"
 serde = "1.0.219"
 toml = "0.8.19"
+
+quinn          = "^0.11"
+rustls         = "^0.23"
+rcgen          = "^0.13"
+rustls-pemfile = "^2"
 
 [package.metadata.deb]
 extended-description = """\
