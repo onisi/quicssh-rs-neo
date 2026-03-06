@@ -14,7 +14,7 @@ homepage = "https://github.com/hkatsuma/quicssh-rs-robust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [[bin]]
-name = "quicssh-rs-robust"
+name = "quicssh-rs"
 path = "src/main.rs"
 
 [dependencies]
