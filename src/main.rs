@@ -69,6 +69,9 @@ fn create_log_config(log_file: Option<PathBuf>, log_level: Option<LevelFilter>) 
 }
 
 fn main() {
+    let _ = rustls::crypto::aws_lc_rs::default_provider()
+        .install_default()
+        .or_else(|_| rustls::crypto::ring::default_provider().install_default());
     let args = Cli::parse();
 
     let config = create_log_config(args.log_file, args.log_level);
