@@ -1,3 +1,7 @@
 /target
 /quicssh-rs.toml
 /quicssh-rs-robust.toml
+.DS_Store
+publish/.DS_Store
+*.patch
+src/*.rs,bk
